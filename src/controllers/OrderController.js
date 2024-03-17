@@ -32,27 +32,49 @@
 //     createOrder,
 // };
 
-const OrderSerice = require('../services/OrderService');
+const OrderService = require('../services/OrderService');
 
 const createOrder = async (req, res) => {
     try {
         const { paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone } = req.body;
-        if (
-            !paymentMethod ||
-            !itemsPrice ||
-            !shippingPrice ||
-            !totalPrice ||
-            !fullName ||
-            !address ||
-            !city ||
-            !phone
-        ) {
+        //không check shippingPrice thì chạy được
+        if (!paymentMethod || !itemsPrice || !totalPrice || !fullName || !address || !city || !phone) {
+            // console.log(
+            //     'user',
+            //     !paymentMethod,
+            //     !itemsPrice,
+            //     !shippingPrice,
+            //     !totalPrice,
+            //     !fullName,
+            //     !address,
+            //     !city,
+            //     !phone,
+            // );
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The inputOrder is required',
             });
         }
-        const response = await OrderSerice.createOrder(req.body);
+        const response = await OrderService.createOrder(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        console.log('e', e);
+        return res.status(404).json({
+            message: e,
+        });
+    }
+};
+
+const getDetailsOrder = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        if (!userId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The userId is required',
+            });
+        }
+        const response = await OrderService.getDetailsOrder(userId);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
@@ -63,4 +85,5 @@ const createOrder = async (req, res) => {
 
 module.exports = {
     createOrder,
+    getDetailsOrder,
 };
