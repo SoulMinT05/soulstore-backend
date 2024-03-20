@@ -39,17 +39,6 @@ const createOrder = async (req, res) => {
         const { paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone } = req.body;
         //không check shippingPrice thì chạy được
         if (!paymentMethod || !itemsPrice || !totalPrice || !fullName || !address || !city || !phone) {
-            // console.log(
-            //     'user',
-            //     !paymentMethod,
-            //     !itemsPrice,
-            //     !shippingPrice,
-            //     !totalPrice,
-            //     !fullName,
-            //     !address,
-            //     !city,
-            //     !phone,
-            // );
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The inputOrder is required',
@@ -58,7 +47,7 @@ const createOrder = async (req, res) => {
         const response = await OrderService.createOrder(req.body);
         return res.status(200).json(response);
     } catch (e) {
-        console.log('e', e);
+        // console.log('e', e);
         return res.status(404).json({
             message: e,
         });

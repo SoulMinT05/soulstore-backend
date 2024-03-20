@@ -36,32 +36,11 @@ const createOrder = (newOrder) => {
                         new: true,
                     },
                 );
-                console.log('productData', productData);
                 if (productData) {
-                    const createdOrder = await Order.create({
-                        orderItems,
-                        shippingAddress: {
-                            fullName,
-                            address,
-                            city,
-                            phone,
-                        },
-                        paymentMethod,
-                        itemsPrice,
-                        shippingPrice,
-                        totalPrice,
-                        user: user,
-                        isPaid,
-                        paidAt,
-                    });
-                    if (createdOrder) {
-                        await EmailService.sendEmailCreateOrder(email, orderItems);
-
-                        return {
-                            status: 'OK',
-                            message: 'SUCCESS',
-                        };
-                    }
+                    return {
+                        status: 'OK',
+                        message: 'SUCCESS',
+                    };
                 } else {
                     return {
                         status: 'OK',
@@ -73,18 +52,41 @@ const createOrder = (newOrder) => {
             const results = await Promise.all(promises);
             const newData = results && results.filter((item) => item.id);
             if (newData.length) {
+                const arrId = [];
+                newData.forEach((item) => {
+                    arrId.push(item.id);
+                });
                 resolve({
                     status: 'ERR',
-                    message: `Product with id${newData.join(',')} sold out`,
+                    message: `Product with id: ${arrId.join(',')} sold out`,
                 });
+            } else {
+                const createdOrder = await Order.create({
+                    orderItems,
+                    shippingAddress: {
+                        fullName,
+                        address,
+                        city,
+                        phone,
+                    },
+                    paymentMethod,
+                    itemsPrice,
+                    shippingPrice,
+                    totalPrice,
+                    user: user,
+                    isPaid,
+                    paidAt,
+                });
+                if (createdOrder) {
+                    await EmailService.sendEmailCreateOrder(email, orderItems);
+                    resolve({
+                        status: 'OK',
+                        message: 'success',
+                    });
+                }
             }
-            resolve({
-                status: 'OK',
-                message: 'Success',
-            });
-            console.log('results', results);
         } catch (e) {
-            console.log('e', e);
+            // console.log('e', e);
             reject(e);
         }
     });
@@ -156,7 +158,6 @@ const cancelOrderDetails = (id, data) => {
                         new: true,
                     },
                 );
-                console.log('productData', productData);
                 if (productData) {
                     order = await Order.findByIdAndDelete(id);
                     if (order === null) {
