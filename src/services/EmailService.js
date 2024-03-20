@@ -15,15 +15,16 @@ const sendEmailCreateOrder = async (email, orderItems) => {
     });
 
     let listItem = '';
+    const attachImage = [];
     orderItems.forEach((order) => {
         listItem += `<div>
         <div>You have ordered the product <b>${order.name}</b> with the quantity: <b>${order.amount}</b>
                 and price: 
                 <b>${order.price} $</b>
             </div>
-            // <div><img src=${order.image} alt='product' /></div>
-            
+            <div>Below is the product image</div>           
         </div>`;
+        attachImage.push({ path: order.image });
     });
 
     // async..await is not allowed in global scope, must use a wrapper
@@ -34,11 +35,11 @@ const sendEmailCreateOrder = async (email, orderItems) => {
         subject: 'Order at TamStore ✔', // Subject line
         text: 'Hello world?', // plain text body
         html: `<div>
-        <div>You have placed your order successfully.</div>
+        <div>Have placed order successfully.</div>${listItem}
+        <div></div>
         <div>Thank you for using our service. Have a good day!</div>
-        ${listItem}
-        </div>
-        `, // html body
+        </div>`,
+        attachments: attachImage,
     });
 };
 
