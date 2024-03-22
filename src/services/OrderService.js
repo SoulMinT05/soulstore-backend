@@ -86,7 +86,7 @@ const createOrder = (newOrder) => {
                 }
             }
         } catch (e) {
-            // console.log('e', e);
+            console.log('e', e);
             reject(e);
         }
     });
@@ -192,10 +192,25 @@ const cancelOrderDetails = (id, data) => {
         }
     });
 };
+const getAllOrder = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allOrder = await Order.find();
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allOrder,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 module.exports = {
     createOrder,
     getAllOrderDetails,
     getDetailsOrder,
     cancelOrderDetails,
+    getAllOrder,
 };
