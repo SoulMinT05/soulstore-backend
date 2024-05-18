@@ -33,14 +33,16 @@ const authUserMiddleWare = (req, res, next) => {
                 status: 'ERROR',
             });
         }
-        if (user?.isAdmin || user?.id === userId || user?._id === userId || user?.isAdmin === 'False') {
-            next();
-        } else {
-            return res.status(404).json({
-                message: 'The authemtication',
-                status: 'ERROR',
-            });
-        }
+        // if (user?.isAdmin || user?.id === userId || user?._id === userId || user?.isAdmin === 'False') {
+        // if (user?.id === userId || user?._id === userId) {
+        //     next();
+        // } else {
+        //     return res.status(404).json({
+        //         message: 'The authemtication',
+        //         status: 'ERROR',
+        //     });
+        // }
+        next();
     });
 };
 

@@ -1,37 +1,3 @@
-// const OrderService = require('../services/OrderService');
-// const JwtService = require('../services/JwtService');
-
-// const createOrder = async (req, res) => {
-//     try {
-//         const { paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone } = req.body;
-//         if (
-//             !paymentMethod ||
-//             !itemsPrice ||
-//             !shippingPrice ||
-//             !totalPrice ||
-//             !fullName ||
-//             !address ||
-//             !city ||
-//             !phone
-//         ) {
-//             return res.status(200).json({
-//                 status: 'ERR',
-//                 message: 'The input is required',
-//             });
-//         }
-//         const response = await OrderService.createOrder(req.body);
-//         return res.status(200).json(response);
-//     } catch (e) {
-//         return res.status(404).json({
-//             message: e,
-//         });
-//     }
-// };
-
-// module.exports = {
-//     createOrder,
-// };
-
 const OrderService = require('../services/OrderService');
 
 const createOrder = async (req, res) => {
@@ -117,10 +83,67 @@ const getAllOrder = async (req, res) => {
         });
     }
 };
+
+const updateOrder = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const data = req.body;
+        if (!orderId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The orderId is required',
+            });
+        }
+        const response = await OrderService.updateOrder(orderId, data);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e,
+        });
+    }
+};
+
+const deleteOrder = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        if (!orderId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The orderId is required',
+            });
+        }
+        const response = await OrderService.deleteOrder(orderId);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e,
+        });
+    }
+};
+const deleteMany = async (req, res) => {
+    try {
+        const ids = req.body.ids;
+        if (!ids) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The ids is required',
+            });
+        }
+        const response = await OrderService.deleteManyOrder(ids);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e,
+        });
+    }
+};
 module.exports = {
     createOrder,
     getAllOrderDetails,
     getDetailsOrder,
     cancelOrderDetails,
     getAllOrder,
+    updateOrder,
+    deleteOrder,
+    deleteMany
 };
